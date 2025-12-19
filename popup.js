@@ -836,6 +836,87 @@ function showNotification(message, type = 'info') {
   }, 3000);
 }
 
+// Adicione esta variável no início com as outras:
+const copyUserIdBtn = document.getElementById('copyUserIdBtn');
+
+// Modifique a função loadCardInfo para mostrar também o user ID:
+async function loadCardInfo() {
+  if (!currentSession) return;
+  
+  try {
+    const data = await apiRequest('/api/card', {
+      method: 'POST',
+      headers: authHeaders()
+    });
+    
+    if (data.cardCode) {
+      displayCardId.textContent = data.cardCode;
+      // Mostra o user ID no card também
+      if (currentSession.userId) {
+        displayUser.textContent = `ID: ${currentSession.userId}`;
+      }
+    } else {
+      displayCardId.textContent = 'Error loading card';
+    }
+  } catch (error) {
+    console.error('Failed to load card info:', error);
+    displayCardId.textContent = 'Error loading card';
+  }
+}
+
+// Adicione esta função para copiar o user ID:
+async function copyUserId() {
+  if (!currentSession || !currentSession.userId) {
+    alert('No user ID available');
+    return;
+  }
+  
+  try {
+    const success = await copyToClipboard(currentSession.userId);
+    if (success) {
+      // Feedback visual
+      const originalText = copyUserIdBtn.textContent;
+      copyUserIdBtn.textContent = 'Copied!';
+      copyUserIdBtn.style.background = 'linear-gradient(180deg, #43b581, #3a9c70)';
+      
+      setTimeout(() => {
+        copyUserIdBtn.textContent = originalText;
+        copyUserIdBtn.style.background = 'linear-gradient(180deg, #7289da, #5b6eae)';
+      }, 2000);
+    } else {
+      alert('Failed to copy. User ID: ' + currentSession.userId);
+    }
+  } catch (error) {
+    console.error('Failed to copy user ID:', error);
+    alert('Failed to copy user ID');
+  }
+}
+
+// Adicione este event listener (coloque com os outros event listeners):
+copyUserIdBtn.addEventListener('click', copyUserId);
+
+// Modifique também a função que mostra a tela principal para garantir que o ID aparece:
+function showScreen(screenName) {
+  if (screenName === 'login') {
+    loginScreen.classList.add('active');
+    mainScreen.classList.remove('active');
+    if (balanceInterval) {
+      clearInterval(balanceInterval);
+      balanceInterval = null;
+    }
+  } else {
+    loginScreen.classList.remove('active');
+    mainScreen.classList.add('active');
+    
+    // Atualizar display com user ID quando mostrar a tela principal
+    if (currentSession && currentSession.userId) {
+      displayUser.textContent = `ID: ${currentSession.userId}`;
+    }
+    
+    startBalanceUpdates();
+  }
+}
+
 // Add animation styles
 const style = document.createElement('style');
 style.textContent = `

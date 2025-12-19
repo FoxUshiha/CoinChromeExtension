@@ -268,30 +268,64 @@
     }
 
     /* Card Screen */
-    .card-display {
-      background: linear-gradient(135deg, #1e1e1e, #121212);
-      border-radius: 16px;
-      padding: 24px;
-      margin-bottom: 20px;
-      position: relative;
-      height: 180px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      border: 1px solid #40444b;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-      overflow: hidden;
-    }
+.card-display {
+  background: linear-gradient(135deg, #1a1d21, #2a2d32);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 20px;
+  position: relative;
+  height: 180px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border: 1px solid #40444b;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
 
-    .card-display::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 40px;
-      background: #000;
-    }
+.card-id-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.card-id-label {
+  font-size: 14px;
+  color: #8f8f8f;
+  margin-bottom: 4px;
+}
+
+.card-id-value {
+  font-family: 'Courier New', monospace;
+  font-size: 16px;
+  font-weight: 600;
+  color: #7289da;
+  word-break: break-all;
+}
+
+/* Botão de copiar ID pequeno */
+.copy-id-btn {
+  background: linear-gradient(180deg, #7289da, #5b6eae);
+  border: none;
+  border-radius: 6px;
+  color: white;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+  margin-left: 10px;
+}
+
+.copy-id-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(114, 137, 218, 0.3);
+}
+
+.copy-id-btn:active {
+  transform: translateY(0);
+}
 
     .card-user {
       font-size: 18px;
@@ -576,69 +610,74 @@
       <div class="nav-tab" data-tab="history">History</div>
     </div>
     
-    <div class="content">
-      <!-- Transfer Tab -->
-      <div id="transferTab" class="tab-content">
-        <div class="card">
-          <div class="card-title">Transfer to User</div>
-          <div class="input-group">
-            <label>Amount (coins)</label>
-            <input type="number" step="0.00000001" id="transferAmount" placeholder="0.00000000">
-          </div>
-          <div class="input-group">
-            <label>Recipient ID</label>
-            <input type="text" id="recipientId" placeholder="User ID">
-          </div>
-          <button id="transferBtn" class="btn">Send Payment</button>
-        </div>
-        
-        <div class="card">
-          <div class="card-title">Pay Bill</div>
-          <div class="input-group">
-            <label>Bill ID</label>
-            <input type="text" id="billId" placeholder="Bill ID">
-          </div>
-          <button id="payBillBtn" class="btn">Pay Bill</button>
-        </div>
+<div class="content">
+  <!-- Transfer Tab -->
+  <div id="transferTab" class="tab-content">
+    <div class="card">
+      <div class="card-title">Transfer to User</div>
+      <div class="input-group">
+        <label>Amount (coins)</label>
+        <input type="number" step="0.00000001" id="transferAmount" placeholder="0.00000000">
       </div>
-      
-      <!-- Card Tab -->
-      <div id="cardTab" class="tab-content" style="display: none;">
-        <div class="card-display">
-          <div>
-            <div class="card-user" id="displayUser">User ID</div>
-            <div class="card-id" id="displayCardId">Loading...</div>
-          </div>
-          <div class="card-actions">
-            <button id="copyCardBtn" class="btn copy-btn">Copy Card</button>
-            <button id="resetCardBtn" class="btn btn-danger">Reset</button>
-          </div>
-        </div>
-        
-        <div class="card">
-          <div class="card-title">Create Bill</div>
-          <div class="input-group">
-            <label>Amount (coins)</label>
-            <input type="number" step="0.00000001" id="billAmount" placeholder="0.00000000">
-          </div>
-          <div class="input-group">
-            <label>From User ID</label>
-            <input type="text" id="fromUserId" placeholder="User ID">
-          </div>
-          <button id="createBillBtn" class="btn">Create Bill</button>
-        </div>
+      <div class="input-group">
+        <label>Recipient ID</label>
+        <input type="text" id="recipientId" placeholder="User ID">
       </div>
-      
-      <!-- History Tab -->
-      <div id="historyTab" class="tab-content" style="display: none;">
-        <div class="card">
-          <div class="card-title">Recent Transactions</div>
-          <div class="transaction-list" id="transactionList">
-            <div class="loading">Loading transactions...</div>
-          </div>
+      <button id="transferBtn" class="btn">Send Payment</button>
+    </div>
+    
+    <div class="card">
+      <div class="card-title">Pay Bill</div>
+      <div class="input-group">
+        <label>Bill ID</label>
+        <input type="text" id="billId" placeholder="Bill ID">
+      </div>
+      <button id="payBillBtn" class="btn">Pay Bill</button>
+    </div>
+  </div>
+  
+  <!-- Card Tab -->
+  <div id="cardTab" class="tab-content" style="display: none;">
+    <div class="card-display">
+      <div>
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+          <div class="card-user" id="displayUser">User ID</div>
+          <button id="copyUserIdBtn" class="copy-btn" style="padding: 6px 12px; font-size: 12px;">
+            Copy ID
+          </button>
         </div>
+        <div class="card-id" id="displayCardId">Loading...</div>
+      </div>
+      <div class="card-actions">
+        <button id="copyCardBtn" class="btn copy-btn">Copy Card</button>
+        <button id="resetCardBtn" class="btn btn-danger">Reset</button>
       </div>
     </div>
+    
+    <div class="card">
+      <div class="card-title">Create Bill</div>
+      <div class="input-group">
+        <label>Amount (coins)</label>
+        <input type="number" step="0.00000001" id="billAmount" placeholder="0.00000000">
+      </div>
+      <div class="input-group">
+        <label>From User ID</label>
+        <input type="text" id="fromUserId" placeholder="User ID">
+      </div>
+      <button id="createBillBtn" class="btn">Create Bill</button>
+    </div>
+  </div>
+  
+  <!-- History Tab -->
+  <div id="historyTab" class="tab-content" style="display: none;">
+    <div class="card">
+      <div class="card-title">Recent Transactions</div>
+      <div class="transaction-list" id="transactionList">
+        <div class="loading">Loading transactions...</div>
+      </div>
+    </div>
+  </div>
+</div>
     
     <div class="footer">
       <div class="footer-links">
