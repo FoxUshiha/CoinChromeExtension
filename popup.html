@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Coin Bank</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      width: 400px;
+      min-height: 600px;
+      background: #36393f;
+      color: #dcddde;
+    }
+
+    .screen {
+      display: none;
+      width: 100%;
+      min-height: 600px;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    /* Header */
+    .header {
+      background: #2f3136;
+      padding: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #202225;
+      border-radius: 0 0 12px 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .logo {
+      font-weight: 800;
+      font-size: 20px;
+      color: #7289da;
+      letter-spacing: 0.5px;
+    }
+
+    .logout-btn {
+      background: linear-gradient(180deg, #ff6b6b, #ff5c5c);
+      border: none;
+      border-radius: 6px;
+      color: white;
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(255, 92, 92, 0.2);
+      transition: transform 0.1s;
+    }
+
+    .logout-btn:active {
+      transform: translateY(1px);
+    }
+
+    /* Balance Box */
+    .balance-box {
+      background: linear-gradient(135deg, #23272a, #2f3136);
+      margin: 20px;
+      padding: 20px;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+      border: 1px solid #40444b;
+    }
+
+    .balance-label {
+      font-size: 13px;
+      color: #8f8f8f;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .balance-amount {
+      font-size: 28px;
+      font-weight: 800;
+      color: #43b581;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Navigation */
+    .nav-tabs {
+      display: flex;
+      background: #2f3136;
+      border-bottom: 1px solid #202225;
+      border-radius: 8px 8px 0 0;
+      overflow: hidden;
+      margin: 0 16px;
+    }
+
+    .nav-tab {
+      flex: 1;
+      text-align: center;
+      padding: 14px 0;
+      cursor: pointer;
+      color: #8f8f8f;
+      transition: all 0.3s;
+      font-weight: 600;
+      font-size: 14px;
+      border-bottom: 3px solid transparent;
+    }
+
+    .nav-tab:hover {
+      background: #36393f;
+    }
+
+    .nav-tab.active {
+      color: white;
+      background: #202225;
+      border-bottom: 3px solid #7289da;
+    }
+
+    /* Content */
+    .content {
+      padding: 20px;
+    }
+
+    .card {
+      background: #2f3136;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+      border: 1px solid #40444b;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-title {
+      margin-bottom: 16px;
+      font-size: 18px;
+      color: white;
+      font-weight: 700;
+    }
+
+    /* Inputs and Buttons */
+    .input-group {
+      margin-bottom: 16px;
+    }
+
+    .input-group label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 14px;
+      color: #8f8f8f;
+      font-weight: 600;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px 16px;
+      background: #202225;
+      border: 1px solid #40444b;
+      border-radius: 8px;
+      color: white;
+      font-size: 15px;
+      transition: all 0.3s;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #7289da;
+      box-shadow: 0 0 0 2px rgba(114, 137, 218, 0.2);
+    }
+
+    .btn {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(180deg, #7289da, #5b6eae);
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-weight: 700;
+      font-size: 15px;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-top: 8px;
+      box-shadow: 0 4px 8px rgba(114, 137, 218, 0.2);
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 12px rgba(114, 137, 218, 0.3);
+    }
+
+    .btn:active {
+      transform: translateY(1px);
+    }
+
+    .btn-success {
+      background: linear-gradient(180deg, #43b581, #3a9c70);
+      box-shadow: 0 4px 8px rgba(67, 181, 129, 0.2);
+    }
+
+    .btn-success:hover {
+      box-shadow: 0 6px 12px rgba(67, 181, 129, 0.3);
+    }
+
+    .btn-danger {
+      background: linear-gradient(180deg, #ff6b6b, #ff5c5c);
+      box-shadow: 0 4px 8px rgba(255, 92, 92, 0.2);
+    }
+
+    .btn-danger:hover {
+      box-shadow: 0 6px 12px rgba(255, 92, 92, 0.3);
+    }
+
+    /* Login Screen */
+    .accounts-list {
+      max-height: 200px;
+      overflow-y: auto;
+      margin-bottom: 16px;
+      border-radius: 8px;
+      border: 1px solid #40444b;
+    }
+
+    .account-item {
+      background: #2f3136;
+      padding: 14px;
+      margin: 0;
+      border-bottom: 1px solid #40444b;
+      cursor: pointer;
+      transition: background 0.2s;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .account-item:last-child {
+      border-bottom: none;
+    }
+
+    .account-item:hover {
+      background: #36393f;
+    }
+
+    .account-user {
+      font-weight: 700;
+      color: white;
+    }
+
+    .account-remove {
+      color: #ff5c5c;
+      font-size: 18px;
+      cursor: pointer;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+      transition: background 0.2s;
+    }
+
+    .account-remove:hover {
+      background: rgba(255, 92, 92, 0.1);
+    }
+
+    /* Card Screen */
+    .card-display {
+      background: linear-gradient(135deg, #1e1e1e, #121212);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 20px;
+      position: relative;
+      height: 180px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border: 1px solid #40444b;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+      overflow: hidden;
+    }
+
+    .card-display::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 40px;
+      background: #000;
+    }
+
+    .card-user {
+      font-size: 18px;
+      font-weight: 800;
+      color: white;
+      margin-bottom: 8px;
+    }
+
+    .card-id {
+      font-family: 'Courier New', monospace;
+      font-size: 15px;
+      color: #8f8f8f;
+      letter-spacing: 1px;
+    }
+
+    .card-actions {
+      display: flex;
+      gap: 12px;
+    }
+
+    .card-actions button {
+      flex: 1;
+    }
+
+    /* Transaction List */
+    .transaction-list {
+      max-height: 300px;
+      overflow-y: auto;
+      border-radius: 8px;
+      border: 1px solid #40444b;
+    }
+
+    .transaction-item {
+      background: #202225;
+      padding: 16px;
+      margin: 0;
+      border-bottom: 1px solid #40444b;
+      font-size: 13px;
+      transition: background 0.2s;
+    }
+
+    .transaction-item:last-child {
+      border-bottom: none;
+    }
+
+    .transaction-item:hover {
+      background: #2a2d32;
+    }
+
+    .tx-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+
+    .tx-amount {
+      color: #43b581;
+      font-weight: 800;
+      font-size: 14px;
+    }
+
+    .tx-amount.negative {
+      color: #ff5c5c;
+    }
+
+    .tx-date {
+      color: #8f8f8f;
+      font-size: 12px;
+    }
+
+    .tx-id {
+      font-family: 'Courier New', monospace;
+      font-size: 11px;
+      color: #6d6d6d;
+      margin-top: 8px;
+      word-break: break-all;
+    }
+
+    /* Loading */
+    .loading {
+      text-align: center;
+      padding: 40px 20px;
+      color: #8f8f8f;
+    }
+
+    /* Toggle Login/Register */
+    .auth-toggle {
+      display: flex;
+      background: #2f3136;
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 20px;
+      border: 1px solid #40444b;
+    }
+
+    .auth-tab {
+      flex: 1;
+      text-align: center;
+      padding: 12px;
+      cursor: pointer;
+      font-weight: 600;
+      color: #8f8f8f;
+      transition: all 0.3s;
+    }
+
+    .auth-tab.active {
+      background: #202225;
+      color: white;
+      box-shadow: inset 0 -3px 0 #7289da;
+    }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      padding: 20px;
+      color: #8f8f8f;
+      font-size: 13px;
+      border-top: 1px solid #202225;
+      background: #2f3136;
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin: 12px 0;
+    }
+
+    .footer-link {
+      color: #7289da;
+      text-decoration: none;
+      font-size: 12px;
+      transition: color 0.2s;
+    }
+
+    .footer-link:hover {
+      color: #5b6eae;
+      text-decoration: underline;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #2f3136;
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #40444b;
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #4a4f55;
+    }
+
+    /* Animation */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .card {
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    /* Copy Button */
+    .copy-btn {
+      background: linear-gradient(180deg, #9fe6c8, #66d398);
+      color: #ffffff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 700;
+      box-shadow: 0 6px 14px rgba(17, 100, 61, 0.16), inset 0 -2px 0 rgba(255, 255, 255, 0.08);
+      transition: transform 0.06s, opacity 0.12s;
+      font-size: 14px;
+    }
+
+    .copy-btn:active {
+      transform: translateY(1px);
+    }
+
+    .copy-btn.red {
+      background: linear-gradient(180deg, #ffb3b3, #ff6b6b);
+      color: #3b0505;
+      box-shadow: 0 6px 14px rgba(110, 16, 16, 0.12), inset 0 -2px 0 rgba(255, 255, 255, 0.06);
+    }
+  </style>
+</head>
+<body>
+  <!-- Login/Register Screen -->
+  <div id="loginScreen" class="screen active">
+    <div class="header">
+      <div class="logo">Coin Bank</div>
+    </div>
+    
+    <div class="content">
+      <div class="auth-toggle">
+        <div class="auth-tab active" data-auth="login">Login</div>
+        <div class="auth-tab" data-auth="register">Register</div>
+      </div>
+
+      <!-- Login Form -->
+      <div id="loginForm" class="card">
+        <div class="card-title">Login to Your Account</div>
+        
+        <div class="input-group">
+          <label>Username</label>
+          <input type="text" id="loginUsername" placeholder="Enter your username">
+        </div>
+        
+        <div class="input-group">
+          <label>Password</label>
+          <input type="password" id="loginPassword" placeholder="Enter your password">
+        </div>
+        
+        <button id="loginBtn" class="btn btn-success">Login</button>
+        
+        <div class="input-group" style="margin-top: 24px;">
+          <label>Saved Accounts</label>
+          <div class="accounts-list" id="accountsList">
+            <!-- Accounts will be loaded here -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Register Form -->
+      <div id="registerForm" class="card" style="display: none;">
+        <div class="card-title">Create New Account</div>
+        
+        <div class="input-group">
+          <label>Username</label>
+          <input type="text" id="registerUsername" placeholder="Choose a username">
+        </div>
+        
+        <div class="input-group">
+          <label>Password</label>
+          <input type="password" id="registerPassword" placeholder="Create a password">
+        </div>
+
+        <div class="input-group">
+          <label>Confirm Password</label>
+          <input type="password" id="registerConfirmPassword" placeholder="Confirm your password">
+        </div>
+        
+        <button id="registerBtn" class="btn">Create Account</button>
+      </div>
+    </div>
+    
+    <div class="footer">
+      <div class="footer-links">
+        <a href="https://bank.foxsrv.net/" class="footer-link" target="_blank">Coin Bank Website</a>
+        <a href="/terms" class="footer-link" target="_blank">Terms of Use</a>
+        <a href="/terms/documentation.html" class="footer-link" target="_blank">API Docs</a>
+        <a href="/terms/privacy.html" class="footer-link" target="_blank">Privacy Policy</a>
+      </div>
+      <div>Coin System © since 2025</div>
+    </div>
+  </div>
+
+  <!-- Main Screen -->
+  <div id="mainScreen" class="screen">
+    <div class="header">
+      <div class="logo">Coin Bank</div>
+      <button id="logoutBtn" class="logout-btn">Logout</button>
+    </div>
+    
+    <div class="balance-box">
+      <div class="balance-label">YOUR BALANCE</div>
+      <div class="balance-amount" id="balanceAmount">0.00000000</div>
+    </div>
+    
+    <div class="nav-tabs">
+      <div class="nav-tab active" data-tab="transfer">Pay</div>
+      <div class="nav-tab" data-tab="card">Card</div>
+      <div class="nav-tab" data-tab="history">History</div>
+    </div>
+    
+    <div class="content">
+      <!-- Transfer Tab -->
+      <div id="transferTab" class="tab-content">
+        <div class="card">
+          <div class="card-title">Transfer to User</div>
+          <div class="input-group">
+            <label>Amount (coins)</label>
+            <input type="number" step="0.00000001" id="transferAmount" placeholder="0.00000000">
+          </div>
+          <div class="input-group">
+            <label>Recipient ID</label>
+            <input type="text" id="recipientId" placeholder="User ID">
+          </div>
+          <button id="transferBtn" class="btn">Send Payment</button>
+        </div>
+        
+        <div class="card">
+          <div class="card-title">Pay Bill</div>
+          <div class="input-group">
+            <label>Bill ID</label>
+            <input type="text" id="billId" placeholder="Bill ID">
+          </div>
+          <button id="payBillBtn" class="btn">Pay Bill</button>
+        </div>
+      </div>
+      
+      <!-- Card Tab -->
+      <div id="cardTab" class="tab-content" style="display: none;">
+        <div class="card-display">
+          <div>
+            <div class="card-user" id="displayUser">User ID</div>
+            <div class="card-id" id="displayCardId">Loading...</div>
+          </div>
+          <div class="card-actions">
+            <button id="copyCardBtn" class="btn copy-btn">Copy Card</button>
+            <button id="resetCardBtn" class="btn btn-danger">Reset</button>
+          </div>
+        </div>
+        
+        <div class="card">
+          <div class="card-title">Create Bill</div>
+          <div class="input-group">
+            <label>Amount (coins)</label>
+            <input type="number" step="0.00000001" id="billAmount" placeholder="0.00000000">
+          </div>
+          <div class="input-group">
+            <label>From User ID</label>
+            <input type="text" id="fromUserId" placeholder="User ID">
+          </div>
+          <button id="createBillBtn" class="btn">Create Bill</button>
+        </div>
+      </div>
+      
+      <!-- History Tab -->
+      <div id="historyTab" class="tab-content" style="display: none;">
+        <div class="card">
+          <div class="card-title">Recent Transactions</div>
+          <div class="transaction-list" id="transactionList">
+            <div class="loading">Loading transactions...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="footer">
+      <div class="footer-links">
+        <a href="https://bank.foxsrv.net/" class="footer-link" target="_blank">Coin Bank Website</a>
+        <a href="/terms" class="footer-link" target="_blank">Terms of Use</a>
+        <a href="/terms/documentation.html" class="footer-link" target="_blank">API Docs</a>
+        <a href="/terms/privacy.html" class="footer-link" target="_blank">Privacy Policy</a>
+      </div>
+      <div>Auto-updates every 2 seconds</div>
+      <div style="margin-top: 4px; font-size: 11px; color: #6d6d6d;">Connected to https://bank.foxsrv.net</div>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
